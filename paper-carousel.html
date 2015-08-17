@@ -1,0 +1,199 @@
+<!doctype html>
+<!--
+Copyright 2015 Sarox
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<link rel="import" href="../iron-image-info/iron-image-info.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`paper-carousel` is an animated image carousel packed into a single element.
+
+    <paper-carousel></paper-carousel>
+
+-->
+<dom-module id="paper-carousel">
+    <style>
+        @media only screen and (min-width: 752px) {
+            :host {
+                display: block;
+                margin: 8px;
+                width: 736px; height: 421px;
+            }
+            :host:hover iron-image-info.selected {
+                width: 480px;
+                top: 67.5px; left: 120px;
+            }
+            :host:hover iron-image-info.unselected {
+                display: none;
+                width: 240px;
+            }
+            :host:hover iron-image-info.unselected.index-0 {
+                display: initial;
+                left: -140px;
+            }
+            :host:hover iron-image-info.unselected.index-1 {
+                display: initial;
+                right: -140px;
+            }
+
+            iron-image-info {
+                position: absolute;
+                transition: all .2s ease;
+            }
+            iron-image-info.selected {
+                width: 720px;
+                top: 0; left: 0;
+            }
+            iron-image-info.unselected {
+                display: none;
+                width: 240px;
+                top: 135px;
+            }
+            iron-image-info.unselected.index-0 {
+                display: initial;
+                left: -260px;
+            }
+            iron-image-info.unselected.index-1 {
+                display: initial;
+                right: -260px;
+            }
+
+            paper-material {
+                height: 100%;
+                overflow: hidden;
+                position: relative;
+                @apply(--layout-horizontal);
+            }
+        }
+        @media only screen and (max-width: 752px) {
+            :host {
+                display: block;
+                margin: 8px 0;
+                width: 100%;
+            }
+
+            paper-material {
+                padding: 0 8px;
+                @apply(--layout-vertical);
+            }
+        }
+    </style>
+
+    <template>
+        <paper-material>
+            <template is="dom-repeat" id="dom-repeat" items="{{data}}">
+                <iron-image-info class$="{{item.class}}" index$="{{index}}" href$="{{item.link}}" src$="{{item.image}}" title$="{{item.title}}" info$="{{item.info}}" width$="{{item.width}}" on-image-tap="_selectItem" sizing="cover" position="center"></iron-image-info>
+            </template>
+        </paper-material>
+    </template>
+</dom-module>
+
+<script>
+	Polymer({
+		is: "paper-carousel",
+
+		properties: {
+			data: {
+				type: Array,
+				observer: "_dataChanged"
+			},
+			selected: {
+				type: Number,
+				value: 0
+			},
+			src: {
+			    type: String,
+			    observer: "_srcChanged"
+			}
+		},
+		_dataChanged: function () {
+			for (var i = 0; i < this.data.length; i++) {
+				this.data[i].class = this._classForIndex(i);
+				this.data[i].width = this._widthForIndex(i);
+			}
+		},
+		_srcChanged: function (newValue, oldValue) {
+		    var element = this;
+		    var xhr = new XMLHttpRequest();
+		    xhr.open("GET", newValue, true);
+		    xhr.addEventListener("readystatechange", function (e) {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    element.data = JSON.parse(xhr.responseText);
+                }
+		    });
+		    xhr.send();
+		},
+
+		listeners: {
+			"mouseover": "_mouseOver",
+			"mouseout": "_mouseOut"
+		},
+		_mouseOver: function () {
+			if (window.innerWidth <= 752) return;
+			this.$$(".selected").width = 480;
+		},
+		_mouseOut: function () {
+			if (window.innerWidth <= 752) return;
+			this.$$(".selected").width = 720;
+		},
+
+		_isSelected: function (index) {
+			return this.selected == index;
+		},
+		_classForIndex: function (index) {
+			if (index == this.selected) {
+				return "selected"
+			} else if (index > this.selected) {
+				return "unselected index-" + (index - 1);
+			} else {
+				return "unselected index-" + index;
+			}
+		},
+		_widthForIndex: function (index) {
+			if (window.innerWidth <= 752) return null;
+			if (index == this.selected) {
+				return 720;
+			} else {
+				return 240;
+			}
+		},
+		_classToSelector: function (classStr) {
+			classStr.replace(" ", ".");
+			return "." + classStr;
+		},
+		_selectItem: function (event) {
+			var item = event.target;
+			var index = item.index;
+			var domRepeat = this.$$("#dom-repeat");
+			var selectedItem = this.$$(".selected");
+
+			this.selected = index;
+			domRepeat.modelForElement(selectedItem).set("item.class", this._classForIndex(selectedItem.index));
+			domRepeat.modelForElement(selectedItem).set("item.width", this._widthForIndex(selectedItem.index));
+			domRepeat.modelForElement(item).set("item.class", this._classForIndex(index));
+			domRepeat.modelForElement(item).set("item.width", this._widthForIndex(index));
+
+			this.fire("mouseover");
+		},
+
+		attached: function () {
+			window.addEventListener("resize", function () {
+				this._dataChanged.bind(this)();
+				this.$$(".index-0").width = null;
+			}.bind(this));
+		}
+	});
+</script>

@@ -1,0 +1,20 @@
+[
+  {
+    "title": "example title",
+    "info": "example information, here for the sole purpose of giving an example.",
+    "image": "example.png",
+    "link": "//www.example.com/"
+  },
+  {
+    "title": "example title",
+    "info": "example information, here for the sole purpose of giving an example.",
+    "image": "example.png",
+    "link": "//www.example.com/"
+  },
+  {
+    "title": "example title",
+    "info": "example information, here for the sole purpose of giving an example.",
+    "image": "example.png",
+    "link": "//www.example.com/"
+  }
+]

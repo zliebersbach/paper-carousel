@@ -3,3 +3,6 @@
 *.iml
 out
 gen
+
+# Bower dependecnies
+bower_components

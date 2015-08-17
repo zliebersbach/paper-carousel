@@ -1,0 +1,31 @@
+{
+  "name": "paper-carousel",
+  "version": "1.0.0",
+  "authors": [
+    "Kevin Boxhoorn <kevin@sarox.com.au>"
+  ],
+  "description": "An animated image carousel packed into a single element.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "carousel",
+    "paper"
+  ],
+  "main": "paper-carousel.html",
+  "license": "http://sarox.com.au/LICENSE",
+  "homepage": "https://github.com/wincinderith/paper-carousel/",
+  "ignore": [
+    "/.*",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "iron-image-info": "wincinderith/iron-image-info#^1.0.0",
+    "paper-material": "PolymerElements/paper-material#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}
