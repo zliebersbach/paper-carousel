@@ -6,15 +6,15 @@
     "link": "//www.example.com/"
   },
   {
-    "title": "example title",
-    "info": "example information, here for the sole purpose of giving an example.",
+    "title": "another example title",
+    "info": "more example information, here for the sole purpose of giving an example.",
     "image": "example.png",
-    "link": "//www.example.com/"
+    "link": "//www.example.org/"
   },
   {
-    "title": "example title",
-    "info": "example information, here for the sole purpose of giving an example.",
+    "title": "and another example title",
+    "info": "even more example information, here for the sole purpose of giving an example.",
     "image": "example.png",
-    "link": "//www.example.com/"
+    "link": "//www.example.net/"
   }
 ]

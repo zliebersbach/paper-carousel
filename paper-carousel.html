@@ -19,15 +19,45 @@ limitations under the License.
 <link rel="import" href="../polymer/polymer.html">
 
 <!--
-`paper-carousel` is an animated image carousel packed into a single element.
+`paper-carousel` is an animated image carousel packed into a single element. You can supply the data for the carousel either as a JSON array through the `data` attribute, or a URL to a JSON file through the `src` attribute.
 
-    <paper-carousel></paper-carousel>
+    <paper-carousel src="carousel.json"></paper-carousel>
 
+The JSON should be formatted as follows:
+
+    [
+        {
+            "title": "example title",
+            "info": "example information.",
+            "image": "example.png",
+            "link": "//www.example.com/"
+        },
+        {
+            "title": "another example title",
+            "info": "more example information.",
+            "image": "example.png",
+            "link": "//www.example.org/"
+        }
+    ]
+
+`"link"` is optional and adds a link on the image when it becomes selected, whereas `"title"`, `"info"` and `"image"` are mandatory and are passed directly to the `iron-image-info`s.
+
+Note, images in the carousel should have an aspect ratio of 16:9. Another limitation of the carousel is that it can only display up to 3 images at a time. This will be revised upon in the future for more responsiveness and flexibility
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-carousel` | Mixin applied to the element's host | `{}`
+`--paper-carousel-image` | Mixin applied to the carousel's `iron-image-info`s | `{}`
 -->
 <dom-module id="paper-carousel">
     <style>
         @media only screen and (min-width: 752px) {
             :host {
+                @apply(--paper-carousel);
                 display: block;
                 margin: 8px;
                 width: 736px; height: 421px;
@@ -50,6 +80,8 @@ limitations under the License.
             }
 
             iron-image-info {
+                @apply(--paper-carousel-image);
+                overflow: none;
                 position: absolute;
                 transition: all .2s ease;
             }
@@ -72,10 +104,11 @@ limitations under the License.
             }
 
             paper-material {
+                @apply(--layout-horizontal);
                 height: 100%;
                 overflow: hidden;
                 position: relative;
-                @apply(--layout-horizontal);
+                border-radius: 2px;
             }
         }
         @media only screen and (max-width: 752px) {
@@ -86,8 +119,9 @@ limitations under the License.
             }
 
             paper-material {
-                padding: 0 8px;
                 @apply(--layout-vertical);
+                padding: 0 8px;
+                border-radius: 2px;
             }
         }
     </style>
@@ -95,7 +129,7 @@ limitations under the License.
     <template>
         <paper-material>
             <template is="dom-repeat" id="dom-repeat" items="{{data}}">
-                <iron-image-info class$="{{item.class}}" index$="{{index}}" href$="{{item.link}}" src$="{{item.image}}" title$="{{item.title}}" info$="{{item.info}}" width$="{{item.width}}" on-image-tap="_selectItem" sizing="cover" position="center"></iron-image-info>
+                <iron-image-info class$="{{item.class}}" index$="{{index}}" href$="{{item.link}}" src$="{{item.image}}" title$="{{item.title}}" info$="{{item.info}}" width$="{{item.width}}" on-iron-image-info-tap="_selectItem"></iron-image-info>
             </template>
         </paper-material>
     </template>
@@ -106,14 +140,17 @@ limitations under the License.
 		is: "paper-carousel",
 
 		properties: {
+		    /** Data for the carousel, passed as a JSON array of objects. */
 			data: {
 				type: Array,
 				observer: "_dataChanged"
 			},
+			/** The selected image. */
 			selected: {
 				type: Number,
 				value: 0
 			},
+			/** URL to a JSON file, containing an array of objects. */
 			src: {
 			    type: String,
 			    observer: "_srcChanged"
@@ -157,9 +194,9 @@ limitations under the License.
 			if (index == this.selected) {
 				return "selected"
 			} else if (index > this.selected) {
-				return "unselected index-" + (index - 1);
+				return "link-disabled unselected index-" + (index - 1);
 			} else {
-				return "unselected index-" + index;
+				return "link-disabled unselected index-" + index;
 			}
 		},
 		_widthForIndex: function (index) {
