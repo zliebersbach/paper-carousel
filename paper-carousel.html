@@ -41,8 +41,9 @@ The JSON should be formatted as follows:
     ]
 
 `"link"` is optional and adds a link on the image when it becomes selected, whereas `"title"`, `"info"` and `"image"` are mandatory and are passed directly to the `iron-image-info`s.
+The link's target can be set with the `link-target` attribute. It defaults to `"_self"`.
 
-Note, images in the carousel should have an aspect ratio of 16:9. Another limitation of the carousel is that it can only display up to 3 images at a time. This will be revised upon in the future for more responsiveness and flexibility
+Note, images in the carousel should have an aspect ratio of 16:9. Another limitation of the carousel is that it can only display up to 3 images at a time. This will be revised upon in the future for more responsiveness and flexibility.
 
 ### Styling
 
@@ -55,6 +56,10 @@ Custom property | Description | Default
 -->
 <dom-module id="paper-carousel">
     <style>
+        :host {
+            display: flex;
+        }
+
         @media only screen and (min-width: 752px) {
             :host {
                 @apply(--paper-carousel);
@@ -112,7 +117,6 @@ Custom property | Description | Default
         }
         @media only screen and (max-width: 752px) {
             :host {
-                display: block;
                 margin: 8px 0;
                 width: 100%;
             }
@@ -128,7 +132,7 @@ Custom property | Description | Default
     <template>
         <paper-material>
             <template is="dom-repeat" id="dom-repeat" items="{{data}}">
-                <iron-image-info class$="{{item.class}}" index$="{{index}}" href$="{{item.link}}" src$="{{item.image}}" title$="{{item.title}}" info$="{{item.info}}" width$="{{item.width}}" on-iron-image-info-tap="_selectItem"></iron-image-info>
+                <iron-image-info class$="[[item.class]]" index$="[[index]]" href$="[[item.link]]" src$="[[item.image]]" title$="[[item.title]]" info$="[[item.info]]" width$="[[item.width]]" link-target="{{linkTarget}}" on-iron-image-info-tap="_selectItem"></iron-image-info>
             </template>
         </paper-material>
     </template>
@@ -153,6 +157,11 @@ Custom property | Description | Default
 			src: {
 			    type: String,
 			    observer: "_srcChanged"
+			},
+			/** The target of the image links, bound to the anchor tags in `iron-image-info`. */
+			linkTarget: {
+			    type: String,
+			    value: "_self"
 			}
 		},
 		_dataChanged: function () {
