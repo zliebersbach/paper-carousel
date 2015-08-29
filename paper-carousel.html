@@ -40,10 +40,11 @@ The JSON should be formatted as follows:
         }
     ]
 
-`"link"` is optional and adds a link on the image when it becomes selected, whereas `"title"`, `"info"` and `"image"` are mandatory and are passed directly to the `iron-image-info`s.
-The link's target can be set with the `link-target` attribute. It defaults to `"_self"`.
+`"link"` is optional and adds a link on the image when it becomes selected, whereas `"title"`, `"info"` and `"src"` are mandatory and are passed directly to the respective `iron-image-info`. The link's target can be set with the `link-target` attribute. It defaults to `"_self"`.
 
-Note, images in the carousel should have an aspect ratio of 16:9. Another limitation of the carousel is that it can only display up to 3 images at a time. This will be revised upon in the future for more responsiveness and flexibility.
+By default the carousel will automatically rotate, but this can be disabled by setting the `auto` attribute. The speed of rotation can be altered by changing `auto-time` to a time in milliseconds.
+
+Note, images in the carousel should have an aspect ratio of 16:9. There should only be a maximum of 3 images in the carousel at a time, but more than that will work with limited functionality when `auto` is set to `true`. This will be revised upon in the future for more responsiveness and flexibility.
 
 ### Styling
 
@@ -56,83 +57,80 @@ Custom property | Description | Default
 -->
 <dom-module id="paper-carousel">
     <style>
-        :host {
-            display: flex;
-        }
+		:host {
+			@apply(--paper-carousel);
+			display: block;
+		}
 
-        @media only screen and (min-width: 752px) {
-            :host {
-                @apply(--paper-carousel);
-                display: block;
-                width: 736px; height: 421px;
-            }
-            :host:hover iron-image-info.selected {
-                width: 480px;
-                top: 67.5px; left: 120px;
-            }
-            :host:hover iron-image-info.unselected {
-                display: none;
-                width: 240px;
-            }
-            :host:hover iron-image-info.unselected.index-0 {
-                display: initial;
-                left: -140px;
-            }
-            :host:hover iron-image-info.unselected.index-1 {
-                display: initial;
-                right: -140px;
-            }
+		@media only screen and (min-width: 752px) {
+			:host {
+				width: 736px; height: 421px;
+			}
+			:host:hover iron-image-info.selected {
+				width: 480px;
+				top: 67.5px; left: 120px;
+			}
+			:host:hover iron-image-info.unselected {
+				display: none;
+				width: 240px;
+			}
+			:host:hover iron-image-info.unselected.index-0 {
+				display: initial;
+				left: -140px;
+			}
+			:host:hover iron-image-info.unselected.index-1 {
+				display: initial;
+				right: -140px;
+			}
 
-            iron-image-info {
-                @apply(--paper-carousel-image);
-                overflow: none;
-                position: absolute;
-                transition: all .2s ease;
-            }
-            iron-image-info.selected {
-                width: 720px;
-                top: 0; left: 0;
-            }
-            iron-image-info.unselected {
-                display: none;
-                width: 240px;
-                top: 135px;
-            }
-            iron-image-info.unselected.index-0 {
-                display: initial;
-                left: -260px;
-            }
-            iron-image-info.unselected.index-1 {
-                display: initial;
-                right: -260px;
-            }
+			iron-image-info {
+				@apply(--paper-carousel-image);
+				overflow: none;
+				position: absolute;
+				transition: all .2s ease;
+			}
+			iron-image-info.selected {
+				width: 720px;
+				top: 0; left: 0;
+			}
+			iron-image-info.unselected {
+				display: none;
+				width: 240px;
+				top: 135px;
+			}
+			iron-image-info.unselected.index-0 {
+				display: initial;
+				left: -260px;
+			}
+			iron-image-info.unselected.index-1 {
+				display: initial;
+				right: -260px;
+			}
 
-            paper-material {
-                @apply(--layout-horizontal);
-                height: 100%;
-                overflow: hidden;
-                position: relative;
-                border-radius: 2px;
-            }
-        }
-        @media only screen and (max-width: 752px) {
-            :host {
-                margin: 8px 0;
-                width: 100%;
-            }
+			paper-material {
+				@apply(--layout-horizontal);
+				height: 100%;
+				overflow: hidden;
+				position: relative;
+				border-radius: 2px;
+			}
+		}
+		@media only screen and (max-width: 752px) {
+			:host {
+				width: 100%;
+			}
 
-            paper-material {
-                @apply(--layout-vertical);
-                padding: 0 8px;
-                border-radius: 2px;
-            }
-        }
+			paper-material {
+				@apply(--layout-vertical);
+				border-radius: 2px;
+			}
+		}
     </style>
 
     <template>
         <paper-material>
-            <template is="dom-repeat" id="dom-repeat" items="{{data}}">
-                <iron-image-info class$="[[item.class]]" index$="[[index]]" href$="[[item.link]]" src$="[[item.image]]" title$="[[item.title]]" info$="[[item.info]]" width$="[[item.width]]" link-target="{{linkTarget}}" on-iron-image-info-tap="_selectItem"></iron-image-info>
+            <template is="dom-repeat" id="repeater" items="{{data}}">
+                <iron-image-info class$="[[item.class]]" index$="[[index]]" href$="[[item.link]]" src$="[[item.src]]" title$="[[item.title]]" info$="[[item.info]]" width$="[[item.width]]" link-target="{{linkTarget}}" on-iron-image-info-tap="_selectItem"></iron-image-info>
             </template>
         </paper-material>
     </template>
@@ -143,9 +141,21 @@ Custom property | Description | Default
 		is: "paper-carousel",
 
 		properties: {
+			/** Detremines whether the carousel should automatically rotate. */
+			auto: {
+				type: Boolean,
+				value: true
+			},
+			/** Sets the speed of automatic rotation in milliseconds. */
+			autoTime: {
+				type: Number,
+				value: 5000,
+				observer: "_autoTimeChanged"
+			},
 		    /** Data for the carousel, passed as a JSON array of objects. */
 			data: {
 				type: Array,
+				value: [],
 				observer: "_dataChanged"
 			},
 			/** The selected image. */
@@ -162,7 +172,20 @@ Custom property | Description | Default
 			linkTarget: {
 			    type: String,
 			    value: "_self"
+			},
+			_autoInterval: {
+				type: Object,
+				value: null
+			},
+			_lastSelectedIndex: {
+				type: Number,
+				value: 0
 			}
+		},
+		_autoTimeChanged: function () {
+			window.clearInterval(this._autoInterval);
+			this._autoInterval = null;
+			this._startAutoInterval();
 		},
 		_dataChanged: function () {
 			for (var i = 0; i < this.data.length; i++) {
@@ -199,46 +222,62 @@ Custom property | Description | Default
 			return this.selected == index;
 		},
 		_classForIndex: function (index) {
-			if (index == this.selected) {
-				return "selected"
-			} else if (index > this.selected) {
-				return "link-disabled unselected index-" + (index - 1);
+			if (index == this.selected) return "selected";
+			if (window.innerWidth <= 752) {
+				var classPrefix = "";
 			} else {
-				return "link-disabled unselected index-" + index;
+				var classPrefix = "link-disabled ";
+			}
+			if (index > this.selected) {
+				return classPrefix + "unselected index-" + (index - 1);
+			} else {
+				return classPrefix + "unselected index-" + index;
 			}
 		},
 		_widthForIndex: function (index) {
-			if (window.innerWidth <= 752) return null;
+			if (window.innerWidth <= 752) return;
 			if (index == this.selected) {
 				return 720;
 			} else {
 				return 240;
 			}
 		},
-		_classToSelector: function (classStr) {
-			classStr.replace(" ", ".");
-			return "." + classStr;
-		},
 		_selectItem: function (event) {
 			var item = event.target;
 			var index = item.index;
-			var domRepeat = this.$$("#dom-repeat");
+			var repeater = this.$.repeater;
 			var selectedItem = this.$$(".selected");
 
 			this.selected = index;
-			domRepeat.modelForElement(selectedItem).set("item.class", this._classForIndex(selectedItem.index));
-			domRepeat.modelForElement(selectedItem).set("item.width", this._widthForIndex(selectedItem.index));
-			domRepeat.modelForElement(item).set("item.class", this._classForIndex(index));
-			domRepeat.modelForElement(item).set("item.width", this._widthForIndex(index));
-
-			this.fire("mouseover");
+			repeater.modelForElement(selectedItem).set("item.class", this._classForIndex(selectedItem.index));
+			repeater.modelForElement(selectedItem).set("item.width", this._widthForIndex(selectedItem.index));
+			repeater.modelForElement(item).set("item.class", this._classForIndex(index));
+			repeater.modelForElement(item).set("item.width", this._widthForIndex(index));
+		},
+		_startAutoInterval: function () {
+			if (this._autoInterval == null) {
+				this._autoInterval = window.setInterval(this.selectNextItem.bind(this), this.autoTime);
+			}
+		},
+		/** Selects the next image in the carousel. */
+		selectNextItem: function () {
+			if (!this.auto) {
+				return;
+			}
+			
+			if (this._lastSelectedIndex < this.data.length - 1) {
+				this._lastSelectedIndex++;
+			} else {
+				this._lastSelectedIndex = 0;
+			}
+			this._selectItem({ target: this.$$("iron-image-info[index='" + this._lastSelectedIndex + "']") });
 		},
 
 		attached: function () {
 			window.addEventListener("resize", function () {
 				this._dataChanged.bind(this)();
-				this.$$(".index-0").width = null;
 			}.bind(this));
+			this._startAutoInterval();
 		}
 	});
 </script>

@@ -1,6 +1,6 @@
 {
   "name": "paper-carousel",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "authors": [
     "Kevin Boxhoorn <kevin@sarox.com.au>"
   ],
@@ -13,7 +13,7 @@
     "paper"
   ],
   "main": "paper-carousel.html",
-  "license": "http://sarox.com.au/LICENSE",
+  "license": "http://wincinderith.github.io/paper-carousel/components/paper-carousel/LICENSE",
   "homepage": "https://github.com/wincinderith/paper-carousel/",
   "ignore": [
     "/.*",
