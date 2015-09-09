@@ -1,8 +1,0 @@
-# IntelliJ project files
-.idea
-*.iml
-out
-gen
-
-# Bower dependecnies
-bower_components
