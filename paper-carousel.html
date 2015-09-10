@@ -181,6 +181,10 @@ Custom property | Description | Default
 			_lastSelectedIndex: {
 				type: Number,
 				value: 0
+			},
+			_hover: {
+				type: Boolean,
+				value: false
 			}
 		},
 		_autoTimeChanged: function () {
@@ -211,10 +215,12 @@ Custom property | Description | Default
 			"mouseout": "_mouseOut"
 		},
 		_mouseOver: function () {
+			this._hover = true;
 			if (window.innerWidth <= 752) return;
 			this.$$(".selected").width = 480;
 		},
 		_mouseOut: function () {
+			this._hover = false;
 			if (window.innerWidth <= 752) return;
 			this.$$(".selected").width = 720;
 		},
@@ -262,7 +268,7 @@ Custom property | Description | Default
 		},
 		/** Selects the next image in the carousel. */
 		selectNextItem: function () {
-			if (!this.auto) {
+			if (!this.auto || this._hover) {
 				return;
 			}
 			
