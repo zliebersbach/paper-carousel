@@ -253,11 +253,9 @@ Custom property | Description | Default
 		},
 		_selectItem: function (event) {
 			var item = event.target;
-			console.dir(item);
 			var index = item.index;
 			var repeater = this.$.repeater;
 			var selectedItem = this.$$(".selected");
-			// console.log(this.selected, ">", index, item);
 
 			this.selected = index;
 			repeater.modelForElement(selectedItem).set("item.class", this._classForIndex(selectedItem.index));
