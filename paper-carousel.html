@@ -131,7 +131,7 @@ Custom property | Description | Default
     <template>
         <paper-material>
             <template is="dom-repeat" id="repeater" items="{{data}}">
-                <iron-image-info class$="[[item.class]]" index$="[[index]]" href$="[[item.link]]" src$="[[item.src]]" title$="[[item.title]]" info$="[[item.info]]" width$="[[item.width]]" link-target="{{linkTarget}}" on-iron-image-info-tap="_selectItem"></iron-image-info>
+                <iron-image-info class$="[[item.class]]" index$="[[index]]" href$="[[item.link]]" src$="[[item.src]]" title$="[[item.title]]" info$="[[item.info]]" width$="[[item.width]]" link-target="{{linkTarget}}" index="{{index}}" on-iron-image-info-tap="_selectItem"></iron-image-info>
             </template>
         </paper-material>
     </template>
@@ -226,14 +226,16 @@ Custom property | Description | Default
 		},
 
 		_isSelected: function (index) {
-			return this.selected == index;
+			return this.selected === index;
 		},
 		_classForIndex: function (index) {
-			if (index == this.selected) return "selected";
+			if (this._isSelected(index)) return "selected";
+
+			var classPrefix;
 			if (window.innerWidth <= 752) {
-				var classPrefix = "";
+				classPrefix = "";
 			} else {
-				var classPrefix = "link-disabled ";
+				classPrefix = "link-disabled ";
 			}
 			if (index > this.selected) {
 				return classPrefix + "unselected index-" + (index - 1);
@@ -251,9 +253,11 @@ Custom property | Description | Default
 		},
 		_selectItem: function (event) {
 			var item = event.target;
+			console.dir(item);
 			var index = item.index;
 			var repeater = this.$.repeater;
 			var selectedItem = this.$$(".selected");
+			// console.log(this.selected, ">", index, item);
 
 			this.selected = index;
 			repeater.modelForElement(selectedItem).set("item.class", this._classForIndex(selectedItem.index));
@@ -262,7 +266,7 @@ Custom property | Description | Default
 			repeater.modelForElement(item).set("item.width", this._widthForIndex(index));
 		},
 		_startAutoInterval: function () {
-			if (this._autoInterval == null) {
+			if (this._autoInterval === null) {
 				this._autoInterval = window.setInterval(this.selectNextItem.bind(this), this.autoTime);
 			}
 		},
@@ -271,7 +275,7 @@ Custom property | Description | Default
 			if (!this.auto || this._hover) {
 				return;
 			}
-			
+
 			if (this._lastSelectedIndex < this.data.length - 1) {
 				this._lastSelectedIndex++;
 			} else {
