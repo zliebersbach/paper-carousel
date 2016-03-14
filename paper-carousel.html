@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-image-info/iron-image-info.html">
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../polymer/polymer.html">
@@ -121,6 +122,12 @@ Custom property | Description | Default
 				width: 100%;
 			}
 
+			iron-image-info {
+				margin-bottom: 0;
+			}
+			iron-image-info:last-of-type {
+				margin-bottom: 8px;
+			}
 			paper-material {
 				@apply(--layout-vertical);
 				border-radius: 2px;
