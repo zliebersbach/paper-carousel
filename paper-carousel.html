@@ -69,20 +69,20 @@ Custom property | Description | Default
 				width: 736px; height: 421px;
 			}
 			:host:hover iron-image-info.selected {
-				width: 480px;
-				top: 67.5px; left: 120px;
+				width: calc(66% - 16px);
+				top: calc(50% - 33%); left: calc(50% - 33%);
 			}
 			:host:hover iron-image-info.unselected {
 				display: none;
-				width: 240px;
+				width: calc(33% - 16px);
 			}
 			:host:hover iron-image-info.unselected.index-0 {
 				display: initial;
-				left: -140px;
+				left: calc(50% + 33%);
 			}
 			:host:hover iron-image-info.unselected.index-1 {
 				display: initial;
-				right: -140px;
+				right: calc(50% + 33%);
 			}
 
 			iron-image-info {
@@ -92,21 +92,21 @@ Custom property | Description | Default
 				transition: all .2s ease;
 			}
 			iron-image-info.selected {
-				width: 720px;
+				width: calc(100% - 16px);
 				top: 0; left: 0;
 			}
 			iron-image-info.unselected {
 				display: none;
-				width: 240px;
-				top: 135px;
+				width: calc(33% - 16px);
+				top: calc(50% - 16.5%);
 			}
 			iron-image-info.unselected.index-0 {
 				display: initial;
-				left: -260px;
+				left: 100%;
 			}
 			iron-image-info.unselected.index-1 {
 				display: initial;
-				right: -260px;
+				right: 100%;
 			}
 
 			paper-material {
