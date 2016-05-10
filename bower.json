@@ -1,32 +1,32 @@
 {
-  "name": "paper-carousel",
-  "version": "1.1.0",
-  "authors": [
-    "Kevin Boxhoorn <kevin@sarox.com.au>"
-  ],
-  "description": "An animated image carousel packed into a single element.",
-  "keywords": [
-    "web-component",
-    "web-components",
-    "polymer",
-    "carousel",
-    "paper"
-  ],
-  "main": "paper-carousel.html",
-  "license": "http://wincinderith.github.io/paper-carousel/components/paper-carousel/LICENSE",
-  "homepage": "https://github.com/wincinderith/paper-carousel/",
-  "ignore": [
-    "/.*",
-    "/demo/"
-  ],
-  "dependencies": {
-    "polymer": "^1.4.0",
-    "iron-image-info": "wincinderith/iron-image-info#^1.0.7",
-    "paper-material": "^1.0.6",
-    "iron-flex-layout": "^1.3.1"
-  },
-  "devDependencies": {
-    "iron-component-page": "^1.1.6",
-    "web-component-tester": "^4.2.2"
-  }
+	"name": "paper-carousel",
+	"version": "1.2.0",
+	"authors": [
+		"Kevin Boxhoorn <kevin@sarox.com.au>"
+	],
+	"description": "An animated image carousel packed into a single element.",
+	"keywords": [
+		"web-component",
+		"web-components",
+		"polymer",
+		"carousel",
+		"paper"
+	],
+	"main": "paper-carousel.html",
+	"license": "Apache-2.0",
+	"homepage": "https://github.com/wincinderith/paper-carousel/",
+	"ignore": [
+		"/.*",
+		"/demo/"
+	],
+	"dependencies": {
+		"polymer": "^1.4.0",
+		"iron-image-info": "wincinderith/iron-image-info#^1.0.7",
+		"paper-material": "^1.0.6",
+		"iron-flex-layout": "^1.3.1"
+	},
+	"devDependencies": {
+		"iron-component-page": "^1.1.6",
+		"web-component-tester": "^4.2.2"
+	}
 }
