@@ -14,13 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-image-info/iron-image-info.html">
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../polymer/polymer.html">
 
 <!--
-`paper-carousel` is an animated image carousel packed into a single element. You can supply the data for the carousel either as a JSON array through the `data` attribute, or a URL to a JSON file through the `src` attribute.
+`paper-carousel` is an animated image carousel packed into a single element. You
+can supply the data for the carousel either as a JSON array through the `data`
+attribute, or a URL to a JSON file through the `src` attribute.
 
     <paper-carousel src="carousel.json"></paper-carousel>
 
@@ -41,11 +42,19 @@ The JSON should be formatted as follows:
         }
     ]
 
-`"link"` is optional and adds a link on the image when it becomes selected, whereas `"title"`, `"info"` and `"src"` are mandatory and are passed directly to the respective `iron-image-info`. The link's target can be set with the `link-target` attribute. It defaults to `"_self"`.
+`"link"` is optional and adds a link on the image when it becomes selected,
+whereas `"title"`, `"info"` and `"src"` are mandatory and are passed directly to
+the respective `iron-image-info`. The link's target can be set with the
+`link-target` attribute. It defaults to `"_self"`.
 
-By default the carousel will automatically rotate, but this can be disabled by setting the `auto` attribute. The speed of rotation can be altered by changing `auto-time` to a time in milliseconds.
+By default the carousel will automatically rotate, but this can be disabled by
+setting the `auto` attribute. The speed of rotation can be altered by changing
+`auto-time` to a time in milliseconds.
 
-Note, images in the carousel should have an aspect ratio of 16:9. There should only be a maximum of 3 images in the carousel at a time, but more than that will work with limited functionality when `auto` is set to `true`. This will be revised upon in the future for more responsiveness and flexibility.
+Note, images in the carousel should have an aspect ratio of 16:9. There should
+only be a maximum of 3 images in the carousel at a time, but more than that will
+work with limited functionality when `auto` is set to `true`. This will be
+revised upon in the future for more responsiveness and flexibility.
 
 ### Styling
 
@@ -120,7 +129,6 @@ Custom property | Description | Default
 			}
 
 			paper-material {
-				@apply(--layout-horizontal);
 				overflow: hidden;
 				position: absolute;
 				border-radius: 2px;
@@ -139,7 +147,6 @@ Custom property | Description | Default
 				margin-bottom: 8px;
 			}
 			paper-material {
-				@apply(--layout-vertical);
 				border-radius: 2px;
 			}
 		}
@@ -148,7 +155,12 @@ Custom property | Description | Default
     <template>
         <paper-material>
             <template is="dom-repeat" id="repeater" items="{{data}}">
-                <iron-image-info class$="[[item.class]]" index$="[[index]]" href$="[[item.link]]" src$="[[item.src]]" title$="[[item.title]]" info$="[[item.info]]" link-target="{{linkTarget}}" index="{{index}}" on-iron-image-info-tap="_selectItem"></iron-image-info>
+                <iron-image-info class$="[[item.class]]" index$="[[index]]"
+					href$="[[item.link]]" src$="[[item.src]]"
+					title$="[[item.title]]" info$="[[item.info]]"
+					link-target="{{linkTarget}}" index="{{index}}"
+					on-iron-image-info-tap="_selectItem">
+				</iron-image-info>
             </template>
         </paper-material>
     </template>
@@ -159,7 +171,7 @@ Custom property | Description | Default
 		is: "paper-carousel",
 
 		properties: {
-			/** Detremines whether the carousel should automatically rotate. */
+			/** Determines whether the carousel should automatically rotate. */
 			auto: {
 				type: Boolean,
 				value: true
@@ -186,7 +198,8 @@ Custom property | Description | Default
 			    type: String,
 			    observer: "_srcChanged"
 			},
-			/** The target of the image links, bound to the anchor tags in `iron-image-info`. */
+			/** The target of the image links, bound to the anchor tags in
+			   `iron-image-info`. */
 			linkTarget: {
 			    type: String,
 			    value: "_self"
@@ -262,12 +275,17 @@ Custom property | Description | Default
 			var selectedItem = this.$$(".selected");
 
 			this.selected = index;
-			repeater.modelForElement(selectedItem).set("item.class", this._classForIndex(selectedItem.index));
-			repeater.modelForElement(item).set("item.class", this._classForIndex(index));
+			repeater.modelForElement(selectedItem).set("item.class",
+				this._classForIndex(selectedItem.index));
+			repeater.modelForElement(item).set("item.class",
+				this._classForIndex(index));
 		},
 		_startAutoInterval: function () {
 			if (this._autoInterval === null) {
-				this._autoInterval = window.setInterval(this.selectNextItem.bind(this), this.autoTime);
+				this._autoInterval = window.setInterval(
+					this.selectNextItem.bind(this),
+					this.autoTime
+				);
 			}
 		},
 		/** Selects the next image in the carousel. */
@@ -281,7 +299,11 @@ Custom property | Description | Default
 			} else {
 				this._lastSelectedIndex = 0;
 			}
-			this._selectItem({ target: this.$$("iron-image-info[index='" + this._lastSelectedIndex + "']") });
+			this._selectItem({
+				target: this.$$(
+					"iron-image-info[index='" + this._lastSelectedIndex + "']"
+				)
+			});
 		},
 
 		attached: function () {
