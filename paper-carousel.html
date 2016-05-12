@@ -256,10 +256,8 @@ Custom property | Description | Default
 		_classForIndex: function (index) {
 			if (this._isSelected(index)) return "selected";
 
-			var classPrefix;
-			if (window.innerWidth <= 752) {
-				classPrefix = "";
-			} else {
+			var classPrefix = "";
+			if (window.innerWidth > 752) {
 				classPrefix = "link-disabled ";
 			}
 			if (index > this.selected) {
