@@ -66,8 +66,15 @@ Custom property | Description | Default
 
 		@media only screen and (min-width: 752px) {
 			:host {
-				width: 736px; height: 421px;
+				width: 100%;
+				position: relative;
 			}
+			:host:after {
+				display: block;
+				padding-top: calc(56.25% + 8px);
+				content: "";
+			}
+			
 			:host:hover iron-image-info.selected {
 				width: calc(66% - 16px);
 				top: calc(50% - 33%); left: calc(50% - 33%);
@@ -87,6 +94,9 @@ Custom property | Description | Default
 
 			iron-image-info {
 				@apply(--paper-carousel-image);
+				--iron-image-info-image: {
+					width: 100%;
+				}
 				overflow: none;
 				position: absolute;
 				transition: all .2s ease;
@@ -111,10 +121,10 @@ Custom property | Description | Default
 
 			paper-material {
 				@apply(--layout-horizontal);
-				height: 100%;
 				overflow: hidden;
-				position: relative;
+				position: absolute;
 				border-radius: 2px;
+				top: 0; bottom: 0; left: 0; right: 0;
 			}
 		}
 		@media only screen and (max-width: 752px) {
@@ -138,7 +148,7 @@ Custom property | Description | Default
     <template>
         <paper-material>
             <template is="dom-repeat" id="repeater" items="{{data}}">
-                <iron-image-info class$="[[item.class]]" index$="[[index]]" href$="[[item.link]]" src$="[[item.src]]" title$="[[item.title]]" info$="[[item.info]]" width$="[[item.width]]" link-target="{{linkTarget}}" index="{{index}}" on-iron-image-info-tap="_selectItem"></iron-image-info>
+                <iron-image-info class$="[[item.class]]" index$="[[index]]" href$="[[item.link]]" src$="[[item.src]]" title$="[[item.title]]" info$="[[item.info]]" link-target="{{linkTarget}}" index="{{index}}" on-iron-image-info-tap="_selectItem"></iron-image-info>
             </template>
         </paper-material>
     </template>
@@ -202,7 +212,6 @@ Custom property | Description | Default
 		_dataChanged: function () {
 			for (var i = 0; i < this.data.length; i++) {
 				this.data[i].class = this._classForIndex(i);
-				this.data[i].width = this._widthForIndex(i);
 			}
 		},
 		_srcChanged: function (newValue, oldValue) {
@@ -223,13 +232,9 @@ Custom property | Description | Default
 		},
 		_mouseOver: function () {
 			this._hover = true;
-			if (window.innerWidth <= 752) return;
-			this.$$(".selected").width = 480;
 		},
 		_mouseOut: function () {
-			this._hover = false;
-			if (window.innerWidth <= 752) return;
-			this.$$(".selected").width = 720;
+			this._hover = false;	
 		},
 
 		_isSelected: function (index) {
@@ -250,14 +255,6 @@ Custom property | Description | Default
 				return classPrefix + "unselected index-" + index;
 			}
 		},
-		_widthForIndex: function (index) {
-			if (window.innerWidth <= 752) return;
-			if (index == this.selected) {
-				return 720;
-			} else {
-				return 240;
-			}
-		},
 		_selectItem: function (event) {
 			var item = event.target;
 			var index = item.index;
@@ -266,9 +263,7 @@ Custom property | Description | Default
 
 			this.selected = index;
 			repeater.modelForElement(selectedItem).set("item.class", this._classForIndex(selectedItem.index));
-			repeater.modelForElement(selectedItem).set("item.width", this._widthForIndex(selectedItem.index));
 			repeater.modelForElement(item).set("item.class", this._classForIndex(index));
-			repeater.modelForElement(item).set("item.width", this._widthForIndex(index));
 		},
 		_startAutoInterval: function () {
 			if (this._autoInterval === null) {
