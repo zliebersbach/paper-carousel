@@ -20,7 +20,7 @@ limitations under the License.
 
 <!--
 `paper-carousel` is an animated image carousel packed into a single element. You
-can supply the data for the carousel either as a JSON array through the `data`
+can supply the data for the carousel either as an array through the `data`
 attribute, or a URL to a JSON file through the `src` attribute.
 
     <paper-carousel src="carousel.json"></paper-carousel>
@@ -43,18 +43,20 @@ The JSON should be formatted as follows:
     ]
 
 `"link"` is optional and adds a link on the image when it becomes selected,
-whereas `"title"`, `"info"` and `"src"` are mandatory and are passed directly to
-the respective `iron-image-info`. The link's target can be set with the
+whereas `"title"`, `"info"` and `"image"` are mandatory and are passed directly
+to the respective `iron-image-info`. The link's target can be set with the
 `link-target` attribute. It defaults to `"_self"`.
 
 By default the carousel will automatically rotate, but this can be disabled by
 setting the `auto` attribute. The speed of rotation can be altered by changing
 `auto-time` to a time in milliseconds.
 
-Note, images in the carousel should have an aspect ratio of 16:9. There should
-only be a maximum of 3 images in the carousel at a time, but more than that will
-work with limited functionality when `auto` is set to `true`. This will be
-revised upon in the future for more responsiveness and flexibility.
+The aspect ratio of the images can be set using the `aspectRatio` property of
+the element. Values should be in the format `"16:9"`.
+
+There should only be a maximum of 3 images in the carousel at a time, but more
+than that will work with limited functionality when `auto` is set to `true`.
+This will be revised upon in the future for more responsiveness and flexibility.
 
 ### Styling
 
@@ -80,7 +82,7 @@ Custom property | Description | Default
 			}
 			:host:after {
 				display: block;
-				padding-top: calc(56.25% + 8px);
+				padding-top: var(--paper-carousel-aspect-ratio);
 				content: "";
 			}
 			
@@ -156,7 +158,7 @@ Custom property | Description | Default
         <paper-material>
             <template is="dom-repeat" id="repeater" items="{{data}}">
                 <iron-image-info class$="[[item.class]]" index$="[[index]]"
-					href$="[[item.link]]" src$="[[item.src]]"
+					href$="[[item.link]]" src$="[[item.image]]"
 					title$="[[item.title]]" info$="[[item.info]]"
 					link-target="{{linkTarget}}" index="{{index}}"
 					on-iron-image-info-tap="_selectItem">
@@ -171,6 +173,12 @@ Custom property | Description | Default
 		is: "paper-carousel",
 
 		properties: {
+			/** Aspect ratio of the images in the carousel. */
+			aspectRatio: {
+				type: String,
+				value: "16:9",
+				observer: "_aspectRatioChanged"
+			},
 			/** Determines whether the carousel should automatically rotate. */
 			auto: {
 				type: Boolean,
@@ -216,6 +224,13 @@ Custom property | Description | Default
 				type: Boolean,
 				value: false
 			}
+		},
+		_aspectRatioChanged: function () {
+			var matches = /^(\d+):(\d+)$/.exec(this.aspectRatio);
+			var x = parseInt(matches[1]), y = parseInt(matches[2]);
+			var z = y / (x / 100);
+			this.customStyle["--paper-carousel-aspect-ratio"] = "calc("+z+"% + 8px)";
+			this.updateStyles();
 		},
 		_autoTimeChanged: function () {
 			window.clearInterval(this._autoInterval);
