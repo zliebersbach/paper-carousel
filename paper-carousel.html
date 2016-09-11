@@ -69,7 +69,7 @@ Custom property | Description | Default
 @demo
 -->
 <dom-module id="paper-carousel">
-    <style>
+	<style>
 		:host {
 			@apply(--paper-carousel);
 			display: block;
@@ -85,7 +85,7 @@ Custom property | Description | Default
 				padding-top: var(--paper-carousel-aspect-ratio);
 				content: "";
 			}
-			
+
 			:host:hover iron-image-info.selected {
 				width: calc(66% - 16px);
 				top: calc(50% - 33%); left: calc(50% - 33%);
@@ -152,20 +152,20 @@ Custom property | Description | Default
 				border-radius: 2px;
 			}
 		}
-    </style>
+	</style>
 
-    <template>
-        <paper-material>
-            <template is="dom-repeat" id="repeater" items="{{data}}">
-                <iron-image-info class$="[[item.class]]" index$="[[index]]"
+	<template>
+		<paper-material>
+			<template is="dom-repeat" id="repeater" items="{{data}}">
+				<iron-image-info class$="[[item.class]]" index$="[[index]]"
 					href$="[[item.link]]" src$="[[item.image]]"
 					title$="[[item.title]]" info$="[[item.info]]"
 					link-target="{{linkTarget}}" index="{{index}}"
 					on-iron-image-info-tap="_selectItem">
 				</iron-image-info>
-            </template>
-        </paper-material>
-    </template>
+			</template>
+		</paper-material>
+	</template>
 </dom-module>
 
 <script>
@@ -190,7 +190,7 @@ Custom property | Description | Default
 				value: 5000,
 				observer: "_autoTimeChanged"
 			},
-		    /** Data for the carousel, passed as a JSON array of objects. */
+			/** Data for the carousel, passed as a JSON array of objects. */
 			data: {
 				type: Array,
 				value: [],
@@ -203,14 +203,14 @@ Custom property | Description | Default
 			},
 			/** URL to a JSON file, containing an array of objects. */
 			src: {
-			    type: String,
-			    observer: "_srcChanged"
+				type: String,
+				observer: "_srcChanged"
 			},
 			/** The target of the image links, bound to the anchor tags in
 			   `iron-image-info`. */
 			linkTarget: {
-			    type: String,
-			    value: "_self"
+				type: String,
+				value: "_self"
 			},
 			_autoInterval: {
 				type: Object,
@@ -243,15 +243,15 @@ Custom property | Description | Default
 			}
 		},
 		_srcChanged: function (newValue, oldValue) {
-		    var element = this;
-		    var xhr = new XMLHttpRequest();
-		    xhr.open("GET", newValue, true);
-		    xhr.addEventListener("readystatechange", function (e) {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    element.data = JSON.parse(xhr.responseText);
-                }
-		    });
-		    xhr.send();
+			var element = this;
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", newValue, true);
+			xhr.addEventListener("readystatechange", function (e) {
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					element.data = JSON.parse(xhr.responseText);
+				}
+			});
+			xhr.send();
 		},
 
 		listeners: {
@@ -262,7 +262,7 @@ Custom property | Description | Default
 			this._hover = true;
 		},
 		_mouseOut: function () {
-			this._hover = false;	
+			this._hover = false;
 		},
 
 		_isSelected: function (index) {
