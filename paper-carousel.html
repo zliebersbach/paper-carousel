@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<link rel="import" href="../iron-image-info/iron-image-info.html">
+<link rel="import" href="../paper-image/paper-image.html">
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../polymer/polymer.html">
 
@@ -47,7 +47,7 @@ The JSON should be formatted as follows:
 
 `"link"` is optional and adds a link on the image when it becomes selected,
 whereas `"title"`, `"info"` and `"image"` are mandatory and are passed directly
-to the respective `iron-image-info`. The link's target can be set with the
+to the respective `paper-image`. The link's target can be set with the
 `link-target` attribute. It defaults to `"_self"`.
 
 By default the carousel will automatically rotate, but this can be disabled by
@@ -68,7 +68,7 @@ The following custom properties and mixins are available for styling:
 Custom property | Description | Default
 ----------------|-------------|----------
 `--paper-carousel` | Mixin applied to the element's host | `{}`
-`--paper-carousel-image` | Mixin applied to the carousel's `iron-image-info`s | `{}`
+`--paper-carousel-image` | Mixin applied to the carousel's `paper-image`s | `{}`
 @demo
 -->
 <dom-module id="paper-carousel">
@@ -89,46 +89,46 @@ Custom property | Description | Default
 				content: "";
 			}
 
-			:host:hover iron-image-info.selected {
+			:host:hover paper-image.selected {
 				width: calc(66% - 16px);
 				top: calc(50% - 33%); left: calc(50% - 33%);
 			}
-			:host:hover iron-image-info.unselected {
+			:host:hover paper-image.unselected {
 				display: none;
 				width: calc(33% - 16px);
 			}
-			:host:hover iron-image-info.unselected.index-0 {
+			:host:hover paper-image.unselected.index-0 {
 				display: initial;
 				left: calc(50% + 33%);
 			}
-			:host:hover iron-image-info.unselected.index-1 {
+			:host:hover paper-image.unselected.index-1 {
 				display: initial;
 				right: calc(50% + 33%);
 			}
 
-			iron-image-info {
+			paper-image {
 				@apply(--paper-carousel-image);
-				--iron-image-info-image: {
+				--paper-image-image: {
 					width: 100%;
 				}
 				overflow: none;
 				position: absolute;
 				transition: all .2s ease;
 			}
-			iron-image-info.selected {
+			paper-image.selected {
 				width: calc(100% - 16px);
 				top: 0; left: 0;
 			}
-			iron-image-info.unselected {
+			paper-image.unselected {
 				display: none;
 				width: calc(33% - 16px);
 				top: calc(50% - 16.5%);
 			}
-			iron-image-info.unselected.index-0 {
+			paper-image.unselected.index-0 {
 				display: initial;
 				left: 100%;
 			}
-			iron-image-info.unselected.index-1 {
+			paper-image.unselected.index-1 {
 				display: initial;
 				right: 100%;
 			}
@@ -145,10 +145,10 @@ Custom property | Description | Default
 				width: 100%;
 			}
 
-			iron-image-info {
+			paper-image {
 				margin-bottom: 0;
 			}
-			iron-image-info:last-of-type {
+			paper-image:last-of-type {
 				margin-bottom: 8px;
 			}
 			paper-material {
@@ -160,12 +160,12 @@ Custom property | Description | Default
 	<template>
 		<paper-material elevation="[[elevation]]">
 			<template is="dom-repeat" id="repeater" items="{{data}}">
-				<iron-image-info class$="[[item.class]]" index$="[[index]]"
+				<paper-image class$="[[item.class]]" index$="[[index]]"
 					href$="[[item.link]]" src$="[[item.image]]"
 					title$="[[item.title]]" info$="[[item.info]]"
 					link-target="{{linkTarget}}" index="{{index}}"
-					on-iron-image-info-tap="_selectItem">
-				</iron-image-info>
+					on-paper-image-tap="_selectItem">
+				</paper-image>
 			</template>
 		</paper-material>
 	</template>
@@ -215,7 +215,7 @@ Custom property | Description | Default
 				observer: "_srcChanged"
 			},
 			/** The target of the image links, bound to the anchor tags in
-			   `iron-image-info`. */
+			   `paper-image`. */
 			linkTarget: {
 				type: String,
 				value: "_self"
@@ -322,7 +322,7 @@ Custom property | Description | Default
 			}
 			this._selectItem({
 				target: this.$$(
-					"iron-image-info[index='" + this._lastSelectedIndex + "']"
+					"paper-image[index='" + this._lastSelectedIndex + "']"
 				)
 			});
 		},

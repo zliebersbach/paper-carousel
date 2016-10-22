@@ -21,7 +21,7 @@
 	],
 	"dependencies": {
 		"polymer": "^1.4.0",
-		"iron-image-info": "wincinderith/paper-image#^1.0.7",
+		"paper-image": "wincinderith/paper-image#^1.0.7",
 		"paper-material": "^1.0.6"
 	},
 	"devDependencies": {
