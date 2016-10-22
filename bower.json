@@ -2,9 +2,9 @@
 	"name": "paper-carousel",
 	"version": "1.2.2",
 	"authors": [
-		"Kevin Boxhoorn <kevin@sarox.com.au>"
+		"Kevin Boxhoorn <kevinboxhoorn@yahoo.com>"
 	],
-	"description": "An animated image carousel packed into a single element.",
+	"description": "Polymer element that displays a Material Design image carousel.",
 	"keywords": [
 		"web-component",
 		"web-components",
@@ -13,15 +13,15 @@
 		"paper"
 	],
 	"main": "paper-carousel.html",
-	"license": "Apache-2.0",
-	"homepage": "https://github.com/wincinderith/paper-carousel/",
+	"license": "GPL-3.0",
+	"homepage": "https://github.com/wincinderith/paper-carousel",
 	"ignore": [
 		"/.*",
 		"/demo/"
 	],
 	"dependencies": {
 		"polymer": "^1.4.0",
-		"iron-image-info": "wincinderith/iron-image-info#^1.0.7",
+		"iron-image-info": "wincinderith/paper-image#^1.0.7",
 		"paper-material": "^1.0.6"
 	},
 	"devDependencies": {
