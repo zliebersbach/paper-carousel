@@ -1,0 +1,155 @@
+<!doctype html>
+<!-- @license
+paper-carousel, a Polymer element that displays a Material Design image carousel.
+Copyright (C) 2016  Kevin Boxhoorn
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+	<script src="../../web-component-tester/browser.js"></script>
+	<script src="../../iron-test-helpers/mock-interactions.js"></script>
+	<link rel="import" href="../paper-carousel.html">
+</head>
+<body>
+	<test-fixture id="paper-carousel">
+		<template>
+			<paper-carousel aspect-ratio="3:2"></paper-carousel>
+		</template>
+	</test-fixture>
+
+	<test-fixture id="paper-carousel-server">
+		<template>
+			<paper-carousel aspect-ratio="3:2" src="/carousel.json">
+			</paper-carousel>
+		</template>
+	</test-fixture>
+
+	<script>
+		const data = [
+			{
+				"title": "demo title",
+				"text": "demo text, here for the sole purpose of giving a demo.",
+				"image": "demo.jpg",
+				"link": "//example.com"
+			},
+			{
+				"title": "another demo title",
+				"text": "more demo text, here for the sole purpose of giving a demo.",
+				"image": "demo.jpg",
+				"link": "//example.org"
+			},
+			{
+				"title": "and another demo title",
+				"text": "even more demo text, here for the sole purpose of giving a demo.",
+				"image": "demo.jpg",
+				"link": "//example.net"
+			}
+		];
+
+		suite("core tests", () => {
+			let paperCarousel;
+			setup(() => {
+				paperCarousel = fixture("paper-carousel");
+			});
+
+			test("has expected state after setting data", (done) => {
+				paperCarousel.data = data;
+				setTimeout(() => {
+					expect(paperCarousel.selectedIndex).to.equal(0);
+					expect(paperCarousel._selected).to.be.not.null;
+					expect(paperCarousel._selected.is).to.equal("paper-image");
+					done();
+				}, 50);
+			});
+
+			test("sets aspect ratio", () => {
+				paperCarousel.addEventListener("loaded-changed", (done) => {
+					let width = paperCarousel.getBoundingClientRect().width,
+						height = paperCarousel.getBoundingClientRect().height;
+					expect(width).to.equal(height);
+					done();
+				});
+				paperCarousel.data = data;
+				paperCarousel.aspectRatio = "1:1";
+			});
+
+			test("can select next image", () => {
+				paperCarousel.addEventListener("selected-index-changed", () => {
+					expect(paperCarousel.selectedIndex).to.equal(1);
+					done();
+				});
+				paperCarousel.data = data;
+				expect(paperCarousel.selectedIndex).to.equal(0);
+				paperCarousel.selectNext();
+			});
+
+			test("can set selected property", (done) => {
+				paperCarousel.data = data;
+				setTimeout(() => {
+					let target = paperCarousel.$$("paper-image:nth-child(2)");
+					let classList = Array.from(target.classList);
+					expect(target).to.be.not.null;
+					expect(classList).to.contain("unselected");
+					paperCarousel.selectedIndex = 1;
+					setTimeout(() => {
+						classList = Array.from(target.classList);
+						expect(classList).to.contain("selected");
+						done();
+					}, 10);
+				}, 50);
+			});
+
+			test("automatically rotates", (done) => {
+				let initialIndex = paperCarousel.selectedIndex;
+				paperCarousel.addEventListener("selected-index-changed", () => {
+					expect(paperCarousel.selectedIndex).to.not.equal(initialIndex);
+					done();
+				});
+				paperCarousel.data = data;
+				paperCarousel.autoTime = 50;
+				paperCarousel.auto = true;
+			});
+		});
+
+		suite("server tests", () => {
+			let server;
+			let serverPaperCarousel;
+			setup(() => {
+				server = sinon.fakeServer.create();
+				server.respondWith("GET", /\/carousel.json/, [
+					200, { "Content-Type": "application/json" },
+					JSON.stringify(data)
+				]);
+
+				serverPaperCarousel = fixture("paper-carousel-server");
+			});
+
+			teardown(() => {
+				server.restore();
+			});
+
+			test("can load data from a file", () => {
+				server.respond();
+				expect(serverPaperCarousel.data).to.have.lengthOf(3);
+			});
+		});
+	</script>
+</body>
+</html>
