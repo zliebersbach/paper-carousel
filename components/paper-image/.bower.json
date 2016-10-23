@@ -1,0 +1,41 @@
+{
+  "name": "paper-image",
+  "version": "1.1.2",
+  "authors": [
+    "Kevin Boxhoorn <kevinboxhoorn@yahoo.com>"
+  ],
+  "description": "Polymer element that displays an image with a revealing panel.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "iron",
+    "image",
+    "info"
+  ],
+  "main": "paper-image.html",
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/wincinderith/paper-image/",
+  "ignore": [
+    "/.*",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "paper-material": "PolymerElements/paper-material#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*",
+    "iron-test-helpers": "PolymerElements/iron-test-helpers#^1.2.5"
+  },
+  "_release": "1.1.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.1.2",
+    "commit": "70d497b27ae90db9b06ff0cbd1e9dd43a27f1f2a"
+  },
+  "_source": "git://github.com/wincinderith/paper-image.git",
+  "_target": "^1.1.2",
+  "_originalSource": "wincinderith/paper-image"
+}

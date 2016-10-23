@@ -1,0 +1,49 @@
+<!doctype html>
+<!--
+paper-carousel, a Polymer element that displays a Material Design image carousel.
+Copyright (C) 2016  Kevin Boxhoorn
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,initial-scale=1.0,user-scalable=yes">
+
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
+		<link rel="import" href="../paper-carousel.html">
+
+		<style is="custom-style">
+			:root {
+				--primary-color: #3F51B5;
+				--accent-color: #FFC107;
+			}
+
+			body {
+				@apply(--layout-vertical);
+				@apply(--layout-center);
+			}
+			paper-carousel {
+				width: 1080px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h3>plain demo</h3>
+		<paper-carousel src="carousel.json" aspect-ratio="3:2"></paper-carousel>
+	</body>
+</html>

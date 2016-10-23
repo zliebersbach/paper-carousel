@@ -1,0 +1,332 @@
+<!doctype html>
+<!--
+paper-carousel, a Polymer element that displays a Material Design image carousel.
+Copyright (C) 2016  Kevin Boxhoorn
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<link rel="import" href="../paper-image/paper-image.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+Polymer element that displays a Material Design image carousel. You can supply
+the data for the carousel either as an array through the `data` attribute, or a
+URL to a JSON file through the `src` attribute.
+
+### Example
+
+To have a default carousel, insert the following into your DOM:
+
+    <paper-carousel src="carousel.json"></paper-carousel>
+
+JSON should be formatted as follows, and provided in a file using the `src`
+attribute, or directly through the `data` attribute:
+
+    [
+        {
+            "title": "demo title",
+            "text": "demo text, here for the sole purpose of giving a demo.",
+            "image": "demo.jpg",
+            "link": "//example.com"
+        },
+        {
+            "title": "another demo title",
+            "text": "more demo text, here for the sole purpose of giving a demo.",
+            "image": "demo.jpg",
+            "link": "//example.org"
+        }
+    ]
+
+`"link"` is optional and adds a link on the image when it becomes selected,
+whereas `"title"`, `"text"` and `"image"` are mandatory and are passed directly
+to the respective `paper-image`. The link's target can be set with the
+`link-target` attribute. It defaults to `"_self"`.
+
+By default the carousel will automatically rotate, but this can be disabled by
+setting the `auto` attribute. The speed of rotation can be altered by changing
+`auto-time` to a time in milliseconds.
+
+The aspect ratio of the images can be set using the `aspectRatio` property of
+the element. Values should be in the format `"16:9"`.
+
+There should only be a maximum of 3 images in the carousel at a time, but more
+than that will work with limited functionality when `auto` is set to `true`.
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-carousel` | Mixin applied to the element | `{}`
+`--paper-carousel-image` | Mixin applied to the carousel's `paper-image`s | `{}`
+
+@demo
+-->
+<dom-module id="paper-carousel">
+	<style>
+		:host {
+			display: block;
+			width: 100%;
+
+			@apply(--paper-carousel);
+		}
+
+		@media only screen and (min-width: 752px) {
+			:host {
+				position: relative;
+			}
+			:host:after {
+				display: block;
+				padding-top: var(--paper-carousel-aspect-ratio);
+				content: "";
+			}
+
+			:host:hover paper-image.selected {
+				width: calc(66% - 16px);
+				top: calc(50% - 33%); left: calc(50% - 33%);
+			}
+			:host:hover paper-image.unselected {
+				display: none;
+				width: calc(33% - 16px);
+			}
+			:host:hover paper-image.unselected.index-0 {
+				display: initial;
+				left: calc(50% + 33%);
+			}
+			:host:hover paper-image.unselected.index-1 {
+				display: initial;
+				right: calc(50% + 33%);
+			}
+
+			paper-image {
+				overflow: none;
+				position: absolute;
+				transition: all .2s ease;
+
+				@apply(--paper-carousel-image);
+			}
+			paper-image.selected {
+				width: calc(100% - 16px);
+				top: 0; left: 0;
+			}
+			paper-image.unselected {
+				display: none;
+				width: calc(33% - 16px);
+				top: calc(50% - 16.5%);
+			}
+			paper-image.unselected.index-0 {
+				display: initial;
+				left: 100%;
+			}
+			paper-image.unselected.index-1 {
+				display: initial;
+				right: 100%;
+			}
+
+			paper-material {
+				overflow: hidden;
+				position: absolute;
+				border-radius: 2px;
+				top: 0; bottom: 0; left: 0; right: 0;
+			}
+		}
+		@media only screen and (max-width: 752px) {
+			paper-image {
+				margin-bottom: 0;
+			}
+			paper-image:last-of-type {
+				margin-bottom: 8px;
+			}
+			paper-material {
+				border-radius: 2px;
+			}
+		}
+	</style>
+
+	<template>
+		<paper-material elevation="[[elevation]]">
+			<template is="dom-repeat" id="repeater" items="{{data}}">
+				<paper-image class$="[[item.class]]" src="[[item.image]]"
+					title="[[item.title]]" text="[[item.text]]"
+					href="[[item.link]]" link-target="[[linkTarget]]"
+					link-disabled="[[item.linkDisabled]]"
+					on-paper-image-tap="_selectImage">
+				</paper-image>
+			</template>
+		</paper-material>
+	</template>
+</dom-module>
+
+<script>
+	Polymer({
+		is: "paper-carousel",
+
+		properties: {
+			/** Aspect ratio of images in the carousel. */
+			aspectRatio: {
+				type: String,
+				value: "16:9",
+				observer: "_aspectRatioChanged"
+			},
+			/** Whether the carousel should automatically rotate. */
+			auto: {
+				type: Boolean,
+				value: true
+			},
+			/** Speed of automatic rotation in milliseconds. */
+			autoTime: {
+				type: Number,
+				value: 5000,
+				observer: "_autoTimeChanged"
+			},
+			/**
+			 * Z-depth of the carousel, from 0-5. Passed onto
+			 * [`paper-material`](https://elements.polymer-project.org/elements/paper-material).
+			 */
+			elevation: {
+				type: Number,
+				value: 1
+			},
+			/**
+			 * Data for the carousel, passed as a JSON array of objects.
+			 * Overrides `src`.
+			 */
+			data: {
+				type: Array,
+				value: () => []
+			},
+			/** Selected image index. */
+			selectedIndex: {
+				type: Number,
+				value: 0
+			},
+			/** URL to a JSON file, containing an array of objects. */
+			src: {
+				type: String,
+				observer: "_srcChanged"
+			},
+			/**
+			 * See [`paper-image`](https://wincinderith.github.io/paper-image/components/paper-image/#paper-image:property-linkTarget)
+			 * for details.
+			 */
+			linkTarget: String,
+
+			_autoInterval: {
+				type: Object,
+				value: null
+			},
+			_hover: {
+				type: Boolean,
+				value: false
+			},
+			_selected: {
+				type: Object,
+				value: null
+			}
+		},
+		_aspectRatioChanged: function () {
+			var matches = /^(\d+):(\d+)$/.exec(this.aspectRatio);
+			var x = parseInt(matches[1]), y = parseInt(matches[2]);
+			var z = y / (x / 100);
+			this.customStyle["--paper-carousel-aspect-ratio"] = "calc("+z+"% + 8px)";
+			this.updateStyles();
+		},
+		_startAutoInterval: function() {
+			if (this._autoInterval === null) {
+				this._autoInterval = setInterval(this.selectNextImage.bind(this),
+					this.autoTime);
+			}
+		},
+		_autoTimeChanged: function () {
+			clearInterval(this._autoInterval);
+			this._autoInterval = null;
+			this._startAutoInterval();
+		},
+		_srcChanged: function (value) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", value, true);
+			xhr.addEventListener("readystatechange", (e) => {
+				if (xhr.readyState == 4 && xhr.status == 200)
+					this.data = JSON.parse(xhr.responseText);
+			});
+			xhr.send();
+		},
+
+		observers: [
+			"_updateImages(data.*, selectedIndex)"
+		],
+		_getDefaultSelected: function() {
+			return this.$$("paper-image:first-of-type");
+		},
+		_isSelected: function(i, si) {
+			return (si || this.selectedIndex) === i;
+		},
+		_classForIndex: function(i) {
+			if (this._isSelected(i)) return "selected";
+			return "unselected index-" + (i > this.selectedIndex ? i - 1 : i);
+		},
+		_updateImages: function(changes, si) {
+			for (var i = 0; i < this.data.length; i++) {
+				this.set("data."+i+".class", this._classForIndex(i));
+				this.set("data."+i+".linkDisabled", !this._isSelected(i));
+			}
+
+			if (this._selected === undefined) {
+				this.async(() => {
+					this._selected = this._getDefaultSelected();
+					if (this._selected === null)
+						this._updateImages();
+				}, 10);
+			}
+		},
+
+		listeners: {
+			"mouseover": "_onMouseOver",
+			"mouseout": "_onMouseOut"
+		},
+		_onMouseOver: function() {
+			this._hover = true;
+		},
+		_onMouseOut: function() {
+			this._hover = false;
+		},
+
+		_selectImage: function(e) {
+			this._selected = e.target;
+			this.selectedIndex = this.$.repeater.indexForElement(e.target);
+		},
+		/** Selects the next image in the carousel. */
+		selectNextImage: function() {
+			if (!this.auto || this._hover)
+				return;
+
+			let target;
+			if (this._selected.nextElementSibling.tagName === "PAPER-IMAGE")
+				target = this._selected.nextElementSibling;
+			else
+				target = this._getDefaultSelected();
+			this._selectImage({
+				target: target
+			});
+		},
+
+		attached: function() {
+			window.addEventListener("resize", () => this._updateImages());
+			this._startAutoInterval();
+		}
+	});
+</script>
