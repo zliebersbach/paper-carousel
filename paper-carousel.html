@@ -33,20 +33,20 @@ The JSON should be formatted as follows:
     [
         {
             "title": "example title",
-            "info": "example information.",
+            "text": "example text.",
             "image": "example.png",
-            "link": "//www.example.com/"
+            "link": "//example.com"
         },
         {
             "title": "another example title",
-            "info": "more example information.",
+            "text": "more example text.",
             "image": "example.png",
-            "link": "//www.example.org/"
+            "link": "//example.org"
         }
     ]
 
 `"link"` is optional and adds a link on the image when it becomes selected,
-whereas `"title"`, `"info"` and `"image"` are mandatory and are passed directly
+whereas `"title"`, `"text"` and `"image"` are mandatory and are passed directly
 to the respective `paper-image`. The link's target can be set with the
 `link-target` attribute. It defaults to `"_self"`.
 
@@ -59,7 +59,6 @@ the element. Values should be in the format `"16:9"`.
 
 There should only be a maximum of 3 images in the carousel at a time, but more
 than that will work with limited functionality when `auto` is set to `true`.
-This will be revised upon in the future for more responsiveness and flexibility.
 
 ### Styling
 
@@ -67,20 +66,22 @@ The following custom properties and mixins are available for styling:
 
 Custom property | Description | Default
 ----------------|-------------|----------
-`--paper-carousel` | Mixin applied to the element's host | `{}`
+`--paper-carousel` | Mixin applied to the element | `{}`
 `--paper-carousel-image` | Mixin applied to the carousel's `paper-image`s | `{}`
+
 @demo
 -->
 <dom-module id="paper-carousel">
 	<style>
 		:host {
-			@apply(--paper-carousel);
 			display: block;
+			width: 100%;
+
+			@apply(--paper-carousel);
 		}
 
 		@media only screen and (min-width: 752px) {
 			:host {
-				width: 100%;
 				position: relative;
 			}
 			:host:after {
@@ -107,13 +108,11 @@ Custom property | Description | Default
 			}
 
 			paper-image {
-				@apply(--paper-carousel-image);
-				--paper-image-image: {
-					width: 100%;
-				}
 				overflow: none;
 				position: absolute;
 				transition: all .2s ease;
+
+				@apply(--paper-carousel-image);
 			}
 			paper-image.selected {
 				width: calc(100% - 16px);
@@ -141,10 +140,6 @@ Custom property | Description | Default
 			}
 		}
 		@media only screen and (max-width: 752px) {
-			:host {
-				width: 100%;
-			}
-
 			paper-image {
 				margin-bottom: 0;
 			}
@@ -160,11 +155,11 @@ Custom property | Description | Default
 	<template>
 		<paper-material elevation="[[elevation]]">
 			<template is="dom-repeat" id="repeater" items="{{data}}">
-				<paper-image class$="[[item.class]]" index$="[[index]]"
-					href$="[[item.link]]" src$="[[item.image]]"
-					title$="[[item.title]]" info$="[[item.info]]"
-					link-target="{{linkTarget}}" index="{{index}}"
-					on-paper-image-tap="_selectItem">
+				<paper-image class$="[[item.class]]" src="[[item.image]]"
+					title="[[item.title]]" text="[[item.text]]"
+					href="[[item.link]]" link-target="[[linkTarget]]"
+					link-disabled="[[item.linkDisabled]]"
+					on-paper-image-tap="_selectImage">
 				</paper-image>
 			</template>
 		</paper-material>
@@ -201,11 +196,10 @@ Custom property | Description | Default
 			/** Data for the carousel, passed as a JSON array of objects. */
 			data: {
 				type: Array,
-				value: [],
-				observer: "_dataChanged"
+				value: () => []
 			},
 			/** The selected image. */
-			selected: {
+			selectedIndex: {
 				type: Number,
 				value: 0
 			},
@@ -216,21 +210,19 @@ Custom property | Description | Default
 			},
 			/** The target of the image links, bound to the anchor tags in
 			   `paper-image`. */
-			linkTarget: {
-				type: String,
-				value: "_self"
-			},
+			linkTarget: String,
+
 			_autoInterval: {
 				type: Object,
 				value: null
 			},
-			_lastSelectedIndex: {
-				type: Number,
-				value: 0
-			},
 			_hover: {
 				type: Boolean,
 				value: false
+			},
+			_selected: {
+				type: Object,
+				value: null
 			}
 		},
 		_aspectRatioChanged: function () {
@@ -240,97 +232,87 @@ Custom property | Description | Default
 			this.customStyle["--paper-carousel-aspect-ratio"] = "calc("+z+"% + 8px)";
 			this.updateStyles();
 		},
+		_startAutoInterval: function() {
+			if (this._autoInterval === null) {
+				this._autoInterval = setInterval(this.selectNextImage.bind(this),
+					this.autoTime);
+			}
+		},
 		_autoTimeChanged: function () {
-			window.clearInterval(this._autoInterval);
+			clearInterval(this._autoInterval);
 			this._autoInterval = null;
 			this._startAutoInterval();
 		},
-		_dataChanged: function () {
-			for (var i = 0; i < this.data.length; i++) {
-				this.data[i].class = this._classForIndex(i);
-			}
-		},
-		_srcChanged: function (newValue, oldValue) {
-			var element = this;
+		_srcChanged: function (value) {
 			var xhr = new XMLHttpRequest();
-			xhr.open("GET", newValue, true);
-			xhr.addEventListener("readystatechange", function (e) {
-				if (xhr.readyState == 4 && xhr.status == 200) {
-					element.data = JSON.parse(xhr.responseText);
-				}
+			xhr.open("GET", value, true);
+			xhr.addEventListener("readystatechange", (e) => {
+				if (xhr.readyState == 4 && xhr.status == 200)
+					this.data = JSON.parse(xhr.responseText);
 			});
 			xhr.send();
 		},
 
-		listeners: {
-			"mouseover": "_mouseOver",
-			"mouseout": "_mouseOut"
+		observers: [
+			"_updateImages(data.*, selectedIndex)"
+		],
+		_getDefaultSelected: function() {
+			return this.$$("paper-image:first-of-type");
 		},
-		_mouseOver: function () {
+		_isSelected: function(i, si) {
+			return (si || this.selectedIndex) === i;
+		},
+		_classForIndex: function(i) {
+			if (this._isSelected(i)) return "selected";
+			return "unselected index-" + (i > this.selectedIndex ? i - 1 : i);
+		},
+		_updateImages: function(changes, si) {
+			for (var i = 0; i < this.data.length; i++) {
+				this.set("data."+i+".class", this._classForIndex(i));
+				this.set("data."+i+".linkDisabled", !this._isSelected(i));
+			}
+
+			if (this._selected === undefined) {
+				this.async(() => {
+					this._selected = this._getDefaultSelected();
+					if (this._selected === null)
+						this._updateImages();
+				}, 10);
+			}
+		},
+
+		listeners: {
+			"mouseover": "_onMouseOver",
+			"mouseout": "_onMouseOut"
+		},
+		_onMouseOver: function() {
 			this._hover = true;
 		},
-		_mouseOut: function () {
+		_onMouseOut: function() {
 			this._hover = false;
 		},
 
-		_isSelected: function (index) {
-			return this.selected === index;
-		},
-		_classForIndex: function (index) {
-			if (this._isSelected(index)) return "selected";
-
-			var classPrefix = "";
-			if (window.innerWidth > 752) {
-				classPrefix = "link-disabled ";
-			}
-			if (index > this.selected) {
-				return classPrefix + "unselected index-" + (index - 1);
-			} else {
-				return classPrefix + "unselected index-" + index;
-			}
-		},
-		_selectItem: function (event) {
-			var item = event.target;
-			var index = item.index;
-			var repeater = this.$.repeater;
-			var selectedItem = this.$$(".selected");
-
-			this.selected = index;
-			repeater.modelForElement(selectedItem).set("item.class",
-				this._classForIndex(selectedItem.index));
-			repeater.modelForElement(item).set("item.class",
-				this._classForIndex(index));
-		},
-		_startAutoInterval: function () {
-			if (this._autoInterval === null) {
-				this._autoInterval = window.setInterval(
-					this.selectNextItem.bind(this),
-					this.autoTime
-				);
-			}
+		_selectImage: function(e) {
+			this._selected = e.target;
+			this.selectedIndex = this.$.repeater.indexForElement(e.target);
 		},
 		/** Selects the next image in the carousel. */
-		selectNextItem: function () {
-			if (!this.auto || this._hover) {
+		selectNextImage: function() {
+			if (!this.auto || this._hover)
 				return;
-			}
 
-			if (this._lastSelectedIndex < this.data.length - 1) {
-				this._lastSelectedIndex++;
-			} else {
-				this._lastSelectedIndex = 0;
-			}
-			this._selectItem({
-				target: this.$$(
-					"paper-image[index='" + this._lastSelectedIndex + "']"
-				)
+			let target;
+			if (this._selected.nextElementSibling.tagName === "PAPER-IMAGE")
+				target = this._selected.nextElementSibling;
+			else
+				target = this._getDefaultSelected();
+			this._selectImage({
+				target: target
 			});
 		},
 
-		attached: function () {
-			window.addEventListener("resize", function () {
-				this._dataChanged.bind(this)();
-			}.bind(this));
+		attached: function() {
+			window.addEventListener("resize", () => this._updateImages());
 			this._startAutoInterval();
 		}
 	});
