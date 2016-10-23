@@ -185,7 +185,7 @@ Custom property | Description | Default
 			/** Whether the carousel should automatically rotate. */
 			auto: {
 				type: Boolean,
-				value: true
+				value: false
 			},
 			/** Speed of automatic rotation in milliseconds. */
 			autoTime: {
@@ -212,6 +212,7 @@ Custom property | Description | Default
 			/** Selected image index. */
 			selectedIndex: {
 				type: Number,
+				notify: true,
 				value: 0
 			},
 			/** URL to a JSON file, containing an array of objects. */
@@ -247,7 +248,7 @@ Custom property | Description | Default
 		},
 		_startAutoInterval: function() {
 			if (this._autoInterval === null) {
-				this._autoInterval = setInterval(this.selectNextImage.bind(this),
+				this._autoInterval = setInterval(this.selectNext.bind(this),
 					this.autoTime);
 			}
 		},
@@ -285,7 +286,7 @@ Custom property | Description | Default
 				this.set("data."+i+".linkDisabled", !this._isSelected(i));
 			}
 
-			if (this._selected === undefined) {
+			if (this._selected === undefined || this._selected === null) {
 				this.async(() => {
 					this._selected = this._getDefaultSelected();
 					if (this._selected === null)
@@ -310,12 +311,13 @@ Custom property | Description | Default
 			this.selectedIndex = this.$.repeater.indexForElement(e.target);
 		},
 		/** Selects the next image in the carousel. */
-		selectNextImage: function() {
+		selectNext: function() {
 			if (!this.auto || this._hover)
 				return;
 
 			let target;
-			if (this._selected.nextElementSibling.tagName === "PAPER-IMAGE")
+			if (this._selected.nextElementSibling
+				&& this._selected.nextElementSibling.is === "paper-image")
 				target = this._selected.nextElementSibling;
 			else
 				target = this._getDefaultSelected();
