@@ -1,31 +1,32 @@
 {
-	"name": "paper-carousel",
-	"version": "1.2.2",
-	"authors": [
-		"Kevin Boxhoorn <kevinboxhoorn@yahoo.com>"
-	],
-	"description": "Polymer element that displays a Material Design image carousel.",
-	"keywords": [
-		"web-component",
-		"web-components",
-		"polymer",
-		"carousel",
-		"paper"
-	],
-	"main": "paper-carousel.html",
-	"license": "GPL-3.0",
-	"homepage": "https://github.com/wincinderith/paper-carousel",
-	"ignore": [
-		"/.*",
-		"/demo/"
-	],
-	"dependencies": {
-		"polymer": "^1.4.0",
-		"paper-image": "wincinderith/paper-image#^1.1.2",
-		"paper-material": "^1.0.6"
-	},
-	"devDependencies": {
-		"iron-component-page": "^1.1.6",
-		"web-component-tester": "^4.2.2"
-	}
+  "name": "paper-carousel",
+  "version": "1.2.2",
+  "authors": [
+    "Kevin Boxhoorn <kevinboxhoorn@yahoo.com>"
+  ],
+  "description": "Polymer element that displays a Material Design image carousel.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "carousel",
+    "paper"
+  ],
+  "main": "paper-carousel.html",
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/wincinderith/paper-carousel",
+  "ignore": [
+    "/.*",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "^1.4.0",
+    "paper-image": "wincinderith/paper-image#^1.1.2",
+    "paper-material": "^1.0.6"
+  },
+  "devDependencies": {
+    "iron-component-page": "^1.1.6",
+    "web-component-tester": "^4.2.2",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.3.1"
+  }
 }

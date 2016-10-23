@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		<meta name="viewport" content="width=device-width,minimum-scale=1.0,initial-scale=1.0,user-scalable=yes">
 
 		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 		<link rel="import" href="../paper-carousel.html">
 
 		<style is="custom-style">
@@ -32,9 +33,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			}
 
 			body {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
+				@apply(--layout-vertical);
+				@apply(--layout-center);
+			}
+			paper-carousel {
+				width: 1080px;
 			}
 		</style>
 	</head>
