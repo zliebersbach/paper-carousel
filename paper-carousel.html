@@ -26,9 +26,14 @@ Polymer element that displays a Material Design image carousel. You can supply
 the data for the carousel either as an array through the `data` attribute, or a
 URL to a JSON file through the `src` attribute.
 
+### Example
+
+To have a default carousel, insert the following into your DOM:
+
     <paper-carousel src="carousel.json"></paper-carousel>
 
-The JSON should be formatted as follows:
+JSON should be formatted as follows, and provided in a file using the `src`
+attribute, or directly through the `data` attribute:
 
     [
         {
@@ -171,34 +176,40 @@ Custom property | Description | Default
 		is: "paper-carousel",
 
 		properties: {
-			/** Aspect ratio of the images in the carousel. */
+			/** Aspect ratio of images in the carousel. */
 			aspectRatio: {
 				type: String,
 				value: "16:9",
 				observer: "_aspectRatioChanged"
 			},
-			/** Determines whether the carousel should automatically rotate. */
+			/** Whether the carousel should automatically rotate. */
 			auto: {
 				type: Boolean,
 				value: true
 			},
-			/** Sets the speed of automatic rotation in milliseconds. */
+			/** Speed of automatic rotation in milliseconds. */
 			autoTime: {
 				type: Number,
 				value: 5000,
 				observer: "_autoTimeChanged"
 			},
-			/** The z-depth of this element, from 0-5. Passed onto [`paper-material`](https://elements.polymer-project.org/elements/paper-material). */
+			/**
+			 * Z-depth of the carousel, from 0-5. Passed onto
+			 * [`paper-material`](https://elements.polymer-project.org/elements/paper-material).
+			 */
 			elevation: {
 				type: Number,
 				value: 1
 			},
-			/** Data for the carousel, passed as a JSON array of objects. */
+			/**
+			 * Data for the carousel, passed as a JSON array of objects.
+			 * Overrides `src`.
+			 */
 			data: {
 				type: Array,
 				value: () => []
 			},
-			/** The selected image. */
+			/** Selected image index. */
 			selectedIndex: {
 				type: Number,
 				value: 0
@@ -208,8 +219,10 @@ Custom property | Description | Default
 				type: String,
 				observer: "_srcChanged"
 			},
-			/** The target of the image links, bound to the anchor tags in
-			   `paper-image`. */
+			/**
+			 * See [`paper-image`](https://wincinderith.github.io/paper-image/components/paper-image/#paper-image:property-linkTarget)
+			 * for details.
+			 */
 			linkTarget: String,
 
 			_autoInterval: {
