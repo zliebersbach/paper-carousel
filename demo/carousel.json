@@ -1,20 +1,20 @@
 [
 	{
-		"title": "example title",
-		"info": "example information, here for the sole purpose of giving an example.",
-		"image": "example.png",
-		"link": "//www.example.com/"
+		"title": "demo title",
+		"text": "demo text, here for the sole purpose of giving a demo.",
+		"image": "demo.jpg",
+		"link": "//example.com"
 	},
 	{
-		"title": "another example title",
-		"info": "more example information, here for the sole purpose of giving an example.",
-		"image": "example.png",
-		"link": "//www.example.org/"
+		"title": "another demo title",
+		"text": "more demo text, here for the sole purpose of giving a demo.",
+		"image": "demo.jpg",
+		"link": "//example.org"
 	},
 	{
-		"title": "and another example title",
-		"info": "even more example information, here for the sole purpose of giving an example.",
-		"image": "example.png",
-		"link": "//www.example.net/"
+		"title": "and another demo title",
+		"text": "even more demo text, here for the sole purpose of giving a demo.",
+		"image": "demo.jpg",
+		"link": "//example.net"
 	}
 ]

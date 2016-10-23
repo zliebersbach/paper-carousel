@@ -18,31 +18,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <html>
-    <head>
-        <title>paper-carousel demo</title>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,initial-scale=1.0,user-scalable=yes">
 
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,minimum-scale=1.0,initial-scale=1.0,user-scalable=yes">
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<link rel="import" href="../paper-carousel.html">
 
-        <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-        <link rel="import" href="../paper-carousel.html">
+		<style is="custom-style">
+			:root {
+				--primary-color: #3F51B5;
+				--accent-color: #FFC107;
+			}
 
-        <style is="custom-style">
-            :root {
-                --default-primary-color: #3F51B5;
-                --accent-color: #FFC107;
-            }
+			body {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+		</style>
+	</head>
 
-            body {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-        </style>
-    </head>
-
-    <body>
-        <h3>plain example</h3>
-        <paper-carousel src="carousel.json"></paper-carousel>
-    </body>
+	<body>
+		<h3>plain demo</h3>
+		<paper-carousel src="carousel.json"></paper-carousel>
+	</body>
 </html>
